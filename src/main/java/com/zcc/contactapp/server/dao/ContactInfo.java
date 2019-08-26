@@ -1,20 +1,34 @@
 package com.zcc.contactapp.server.dao;
 
 import lombok.Data;
+import org.springframework.context.annotation.Primary;
+
+import javax.persistence.*;
 
 /**
  * Created by cc on 2019/4/2.
  */
 @Data
+@Entity(name = "contactor")
+@Table(name = "contactors")
 public class ContactInfo {
 
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String name;
+    @Column(name = "first_name")
+    private String firstName;
 
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "avatar_filename")
     private String avatarUrl;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "introduction")
     private String desc;
 }
