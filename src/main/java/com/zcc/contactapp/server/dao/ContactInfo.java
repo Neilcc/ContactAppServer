@@ -9,8 +9,8 @@ import javax.persistence.*;
  * Created by cc on 2019/4/2.
  */
 @Data
-@Entity(name = "contactor")
-@Table(name = "contactors")
+@Entity(name = "contactinfo")
+@Table(name = "contacts")
 public class ContactInfo {
 
     @Id
