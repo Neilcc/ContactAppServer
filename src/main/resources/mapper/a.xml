@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcc.contactapp.server.db.mybatis.ContactDao">
+    <select id="getInfo" parameterType="long" resultType="contactinfo">
+        select id, first_name as firstName, title, last_name as lastName, introduction as 'desc' from contactors where id = #{id}
+    </select>
+</mapper>

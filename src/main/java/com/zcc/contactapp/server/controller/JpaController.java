@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by cc on 2019/8/26.
  */
@@ -22,5 +24,11 @@ public class JpaController {
     public ContactInfo getContactor(Long id) {
         ContactInfo contactInfo = jpaContactorRepository.findById(id).get();
         return contactInfo;
+    }
+
+    @RequestMapping("/getbyname")
+    @ResponseBody
+    public List<ContactInfo> getForName(String name) {
+        return jpaContactorRepository.findContacts(name, "");
     }
 }

@@ -1,6 +1,7 @@
 package com.zcc.contactapp.server.dao;
 
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
@@ -9,8 +10,9 @@ import javax.persistence.*;
  * Created by cc on 2019/4/2.
  */
 @Data
-@Entity(name = "contactinfo")
-@Table(name = "contacts")
+@Entity(name = "zcc")
+@Table(name = "contactors")
+@Alias("contactinfo")
 public class ContactInfo {
 
     @Id
