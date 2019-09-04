@@ -45,6 +45,28 @@ public class RedisController {
         System.out.println(list);
         ret.put("success", true);
         return ret;
+    }
 
+
+    @RequestMapping("/pipeline")
+    @ResponseBody
+    public String testRedisPerformance() {
+        Long start = System.currentTimeMillis();
+        List list = (List) redisTemplate.executePipelined(new SessionCallback() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                for (int i = 0; i < 100000; i++) {
+                    operations.opsForValue().set("pipline" + i, "val" + i);
+                    String valret = (String) operations.opsForValue().get("pipline" + i);
+                    if (i == 100000 - 1) {
+                        System.out.println("out val " + valret);
+                    }
+                }
+//                return operations.exec();
+                return null;
+            }
+        });
+        Long end1 = System.currentTimeMillis() - start;
+        return "ok end1" + end1;
     }
 }
