@@ -1,12 +1,17 @@
 package com.zcc.contactapp.server.redis;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
@@ -16,6 +21,31 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisConfig {
 
     private RedisConnectionFactory redisConnectionFactory = null;
+
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler = null;
+
+    @Autowired
+    private RedisMsgListener redisMsgListener;
+
+    @Bean
+    public ThreadPoolTaskScheduler initTaskScheduler() {
+        if (threadPoolTaskScheduler == null) {
+            threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+            threadPoolTaskScheduler.setPoolSize(20);
+        }
+        return this.threadPoolTaskScheduler;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer initRedisContainer() {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+        redisMessageListenerContainer.setTaskExecutor(initTaskScheduler());
+        Topic topic = new ChannelTopic("topic1");
+        redisMessageListenerContainer.addMessageListener(redisMsgListener, topic);
+        return redisMessageListenerContainer;
+    }
+
 
     @Bean(name = "RedisConnectionFactory")
     public RedisConnectionFactory initRedisConnectionFactory() {
