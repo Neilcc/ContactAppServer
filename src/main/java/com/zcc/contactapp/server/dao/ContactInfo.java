@@ -5,6 +5,7 @@ import org.apache.ibatis.type.Alias;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by cc on 2019/4/2.
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Entity(name = "zcc")
 @Table(name = "contactors")
 @Alias("contactinfo")
-public class ContactInfo {
+public class ContactInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

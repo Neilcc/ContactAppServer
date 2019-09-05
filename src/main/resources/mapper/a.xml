@@ -6,4 +6,37 @@
     <select id="getInfo" parameterType="long" resultType="contactinfo">
         select id, first_name as firstName, title, last_name as lastName, introduction as 'desc' from contactors where id = #{id}
     </select>
+
+    <insert id="insertContact" useGeneratedKeys="true" keyProperty="id" parameterType="contactinfo">
+        INSERT INTO contactors(first_name, last_name, avatar_filename, title, introduction)
+        VALUES (#{firstName}, #{lastName}, #{avatarUrl}, #{title}, #{desc})
+    </insert>
+
+    <update id="updateContact" parameterType="contactinfo">
+        update contactors
+        <set>
+            <if test="firstName!=null">first_name = #{firstName},</if>
+            <if test="lastName!=null">last_name = #{lastName}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findContacts" resultType="contacts">
+        SELECT id,first_name,last_name,title,introduction FROM contactors
+        <where>
+            <if test="first_name != null">
+                and first_name = #{first_name}
+            </if>
+            <if test="title != null">
+                AND title = #{title}
+            </if>
+        </where>
+
+    </select>
+
+    <delete id="deleteContact" parameterType="long">
+        DELETE FROM contactors WHERE id = #{id}
+    </delete>
+
+
 </mapper>
