@@ -28,6 +28,14 @@ public class RedisConfig {
     private RedisMsgListener redisMsgListener;
 
     @Bean
+    public RedisMsgListener initListener() {
+        if (this.redisMsgListener == null) {
+            this.redisMsgListener = new RedisMsgListener();
+        }
+        return this.redisMsgListener;
+    }
+
+    @Bean
     public ThreadPoolTaskScheduler initTaskScheduler() {
         if (threadPoolTaskScheduler == null) {
             threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
@@ -36,16 +44,16 @@ public class RedisConfig {
         return this.threadPoolTaskScheduler;
     }
 
-    @Bean
-    public RedisMessageListenerContainer initRedisContainer() {
-        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
-        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
-        redisMessageListenerContainer.setTaskExecutor(initTaskScheduler());
-        Topic topic = new ChannelTopic("topic1");
-        redisMessageListenerContainer.addMessageListener(redisMsgListener, topic);
-        return redisMessageListenerContainer;
+    @Bean(name = "redisTemplate")
+    public RedisTemplate<Object, Object> initRedisTemplate() {
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+        RedisSerializer serializer = redisTemplate.getStringSerializer();
+        redisTemplate.setKeySerializer(serializer);
+        redisTemplate.setHashKeySerializer(serializer);
+        redisTemplate.setHashValueSerializer(serializer);
+        redisTemplate.setConnectionFactory(initRedisConnectionFactory());
+        return redisTemplate;
     }
-
 
     @Bean(name = "RedisConnectionFactory")
     public RedisConnectionFactory initRedisConnectionFactory() {
@@ -64,15 +72,17 @@ public class RedisConfig {
         return redisConnectionFactory;
     }
 
-    @Bean(name = "redisTemplate")
-    public RedisTemplate<Object, Object> initRedisTemplate() {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-        RedisSerializer serializer = redisTemplate.getStringSerializer();
-        redisTemplate.setKeySerializer(serializer);
-        redisTemplate.setHashKeySerializer(serializer);
-        redisTemplate.setHashValueSerializer(serializer);
-        redisTemplate.setConnectionFactory(initRedisConnectionFactory());
-        return redisTemplate;
+    @Bean
+    public RedisMessageListenerContainer initRedisContainer() {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+        redisMessageListenerContainer.setTaskExecutor(initTaskScheduler());
+        Topic topic = new ChannelTopic("topic1");
+        redisMessageListenerContainer.addMessageListener(redisMsgListener, topic);
+        return redisMessageListenerContainer;
     }
+
+
+
 
 }

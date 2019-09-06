@@ -21,7 +21,7 @@
         WHERE id = #{id}
     </update>
 
-    <select id="findContacts" resultType="contacts">
+    <select id="findContacts" resultType="contactinfo">
         SELECT id,first_name,last_name,title,introduction FROM contactors
         <where>
             <if test="first_name != null">
